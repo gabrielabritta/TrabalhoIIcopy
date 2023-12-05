@@ -1,0 +1,219 @@
+#:kivy 1.11.1
+
+<MainWidget>:
+    orientation: 'vertical'
+    canvas:
+        Color:
+            rgb: 0.5,0.5,0.5
+        Rectangle:
+            size: self.size
+    
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: (1,0.1)
+        spacing: 10
+        
+        Label:
+            text: 'SUPERVISÓRIO PNEUMÁTICO v1.0'
+            size_hint: (0.4375,1)
+            width: 300
+        
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (0.4375,1)
+            width: 400
+
+            Label:
+                text: 'Configurações'
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Button:
+                    text: 'MODBUS'
+                    on_release: root._modbusPopup.open()
+
+                Button:
+                    text: 'Scan Time'
+                    on_release: root._scanPopup.open()
+
+        Image: 
+            id: img_con
+            size_hint: (0.125,1)
+            width: 80
+            source: 'imgs/desconectado.png'
+            pos_hint: {'top': 1, 'right': 1}
+
+
+    FloatLayout: 
+        canvas:
+            Color:
+                rgb: 0.81,0.81,0.81
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Image:
+            source: 'imgs/pneumaticoCinza2.png'
+            size: root.width, root.height
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        Image:
+            id: pressure
+            source: 'imgs/Moldura.png'
+            size_hint: 0.09, 0.09
+            pos_hint: {'x': 0.055, 'y': 0.75}
+
+        Label: 
+            id: move_pit01
+            size_hint: (None, None)
+            size: (pressure.size[0]*0.5755, pressure.size[1]*0.30)
+            pos_hint: {'x': 0.0752, 'y': 0.793}
+            canvas:
+                Color:
+                    rgb: 0.6,0.6,0.6
+                Rectangle:
+                    size: self.size
+                    pos: (self.pos[0], self.pos[1])
+
+        
+
+        Button:
+            text:'i'
+            font_size: 20
+            size: 25, 25
+            size_hint: None, None
+            pos_hint: {'x': 0.12, 'y': 0.33}
+            on_release: root._motor.open()
+        
+        Label:
+            id: activeMotor
+            text: 'DESLIGADO'
+            font_size: 16
+            bold: True
+            pos_hint: {'x': -0.43, 'y': -0.03}
+            halign: 'center'
+            color: 0,0,0,1
+            canvas.before:
+                Color:
+                    rgb: 0.6,0.6,0.6
+                Rectangle:
+                    size: 100,25
+                    pos: 20,344
+
+        MeasureLabel:
+            id: velocity
+            text: '-.-   RPM'
+            pos_hint: {'x': -0.43, 'y': -0.26}
+
+        MeasureLabel:
+            id: torque
+            text: '-.-   N.m'
+            pos_hint: {'x': -0.43, 'y': -0.37}
+
+        MeasureLabel:
+            id: pit01
+            text: '-.-   kgf/cm3'
+            pos_hint: {'x': -0.23, 'y': 0.275}
+
+        MeasureLabel:
+            id: fv01
+            text: '-.-   %'
+            pos_hint: {'x': 0.07, 'y': 0.325}
+
+        MeasureLabel:
+            id: fit02
+            text: '-.-   Nm3/min'
+            pos_hint: {'x': 0.27, 'y': 0.4}
+
+        MeasureLabel:
+            id: fit03
+            text: '-.-  Nm3/min'
+            pos_hint: {'x': 0.137, 'y': 0.15}
+
+        ValveLabel:
+            id: xv1
+            pos_hint: {'x': 0.36, 'y': 0.305}
+            canvas.before:
+                Rectangle:
+                    size: 85,25
+                    pos: 817,553
+
+        ValveLabel:
+            id: xv2
+            pos_hint: {'x': 0.36, 'y': 0.0625}
+            canvas.before:
+                Rectangle:
+                    size: 85,25
+                    pos: 817,402
+
+        ValveLabel:
+            id: xv3
+            pos_hint: {'x': 0.382, 'y': -0.052}
+            canvas.before:
+                Rectangle:
+                    size: 85,25
+                    pos: 840,330
+
+        ValveLabel:
+            id: xv4
+            pos_hint: {'x': 0.36, 'y': -0.165}
+            canvas.before:
+                Rectangle:
+                    size: 85,25
+                    pos: 817,260
+
+        ValveLabel:
+            id: xv5
+            pos_hint: {'x': 0.382, 'y': -0.275}
+            canvas.before:
+                Rectangle:
+                    size: 85,25
+                    pos: 840,190
+
+        ValveLabel:
+            id: xv6
+            pos_hint: {'x': 0.36, 'y': -0.388}
+            canvas.before:
+                Rectangle:
+                    size: 85,25
+                    pos: 817,120
+                
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: (1,0.1)
+
+        Button:
+            id: commandsButton
+            text: 'Comandos'
+            on_release: root._commands.open()
+            disabled: True
+
+        Button:
+            id: measButton
+            text: 'Gráfico tempo real'
+            on_release: root._realTimeGraph.open() 
+            disabled: True
+        Button:
+            text: 'Dados históricos'
+            on_release: root._hGraph.open()
+
+
+<MeasureLabel@Label>:
+    font_size: 12
+    bold: True
+    halign: 'center'
+    color: 0,0,0,1
+
+<ValveLabel@Label>:
+    text: 'FECHADA'
+    font_size: 16
+    bold: True
+    halign: 'center'
+    color: 0,0,0,1
+    canvas.before:
+        Color:
+            rgb: 0.6,0.6,0.6
+    
+        
+        

@@ -1,0 +1,688 @@
+#:kivy 1.11.1
+
+<ModbusPopup>:
+    title: "Configurações MODBUS"
+    size_hint: 0.4, None
+    height: 200
+
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+
+        GridLayout: 
+            cols: 2
+            rows: 2
+
+            Label:
+                text: "IP"
+                font_size: 14
+
+            TextInput:
+                id: txt_ip
+                text: "192.168.0.14"
+                font_size: 14
+                halign: 'center'
+                valign: 'middle'
+
+            Label:
+                text: "Porta"
+                font_size: 14
+
+            TextInput:
+                id: txt_port
+                text: "502"
+                font_size: 14
+                halign: 'center'
+                valign: 'middle'
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                id: connect_button
+                text: "conectar"
+                size_hint_y: None
+                height: 40 
+                on_release: 
+                    root.clearInfo()
+                    app.root.connectOrDisconnect(txt_ip.text, int(txt_port.text))
+                    #app.root.startDataRead(txt_ip.text, int(txt_port.text))
+            
+            Button:
+                text: "Fechar"
+                size_hint_y: None
+                height: 40 
+                on_release: 
+                    root.dismiss()
+                    root.clearInfo()
+
+
+<ScanPopup>:
+    title: "Configuração ScanTime"
+    size_hint: 0.4, None
+    height: 150
+
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+
+        GridLayout: 
+            cols: 2
+            rows: 1
+
+            Label:
+                text: "ScanTime [ms]"
+                font_size: 14
+
+            TextInput:
+                id: txt_st
+                font_size: 14
+                halign: 'center'
+                valign: 'middle'
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: "configurar"
+                size_hint_y: None
+                height: 40 
+                on_release: app.root._scan_time = int(txt_st.text)
+            
+            Button:
+                text: "Fechar"
+                size_hint_y: None
+                height: 40 
+                on_release: root.dismiss()
+
+
+<MotorPopup>:
+    title: "Dados adicionais do motor"
+    size_hint: 0.4, None
+    height: 400
+
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+
+        GridLayout: 
+            cols: 2
+            rows: 5
+
+            Label:
+                text: "Frequência da rede [Hz]"
+                font_size: 14
+
+            Label:
+                id: freq
+                text: "-.-"
+                font_size: 14
+
+            Label:
+                text: "Corrente média [A]"
+                font_size: 14
+
+            Label:
+                id: current
+                text: "-.-"
+                font_size: 14
+
+            Label:
+                text: "Potência Ativa [W]"
+                font_size: 14
+
+            Label:
+                id: P
+                text: "-.-"
+                font_size: 14
+
+            Label:
+                text: "Potência Reativa [VAr]"
+                font_size: 14
+
+            Label:
+                id: Q
+                text: "-.-"
+                font_size: 14
+
+            Label:
+                text: "Potência Aparente [Va]"
+                font_size: 14
+
+            Label:
+                id: S
+                text: "-.-"
+                font_size: 14               
+                
+        Button:
+            text: "Fechar"
+            size_hint_y: None
+            height: 30 
+            on_release: root.dismiss()
+
+
+<CommandsPopup>:
+    title: "Comandos"
+    size_hint: 0.98, None
+    height: 600
+    BoxLayout:
+        orientation:'vertical'
+        
+        BoxLayout:
+            orientation:'horizontal'
+            spacing: 25
+            padding: 10
+
+            BoxLayout:
+                orientation:'vertical'
+                background_color: 0.5,0.5,0.5,0.4 #Ñ ta funfando
+                spacing: 20
+                Label:
+                    text: " Comando do Compressor"
+                    text_size: self.size
+                    font_size: 20
+                    halign: 'center'
+                    valign: 'center'
+                Button:
+                    id: activeMotorButton 
+                    text: "Liga"
+                    on_release: 
+                        app.root.commandMotor(1)          
+                Button:
+                    id: desactiveMotorButton 
+                    text: "Desliga"       
+                    on_release:
+                        app.root.commandMotor(0)                 
+                Button:
+                    id: resetMotorButton
+                    text:"Reset"
+                    on_release:
+                        app.root.commandMotor(2)   
+                    
+            BoxLayout:
+                orientation:'vertical'
+                background_color: 0.5,0.5,0.5,0.4
+                spacing: 20
+                Label:
+                    text: " Seleciona Tipo da partida"
+                    text_size: self.size
+                    font_size: 20
+                    halign: 'center'
+                    valign: 'center'
+                Button:
+                    id: directStart
+                    text: "Tesys Direta"
+                    on_release: 
+                        app.root.writeHolding(1324, 3)
+                Button:
+                    id: inversorStart
+                    text: "ATV31 Inversor"
+                    on_release: 
+                        app.root.writeHolding(1324, 2)
+                Button:
+                    id: softStarter
+                    text: "ATS48 Soft-Start"
+                    on_release: 
+                        app.root.writeHolding(1324, 1)
+
+            BoxLayout:
+                orientation:'horizontal'
+                spacing: 20    
+                BoxLayout:
+                    orientation:'vertical'
+                    BoxLayout:
+                        spacing: 20
+                        orientation:'vertical'
+                        Label:
+                            text: 'ATS48'
+                            size_hint_y: 0.3
+                        GridLayout: 
+                            cols: 2
+                            rows: 2
+
+                            Label:
+                                text: "ACC [s]"
+                                font_size: 14
+
+                            TextInput:
+                                id: accTime
+                                text: "10"
+                                font_size: 14
+                                halign: 'center'
+                                valign: 'middle'
+                                on_text: app.root.writeHolding(1314, self.text, 10)
+
+                            Label:
+                                text: "DCC [s]"
+                                font_size: 14
+
+                            TextInput:
+                                id: desaccTime
+                                text: "10"
+                                font_size: 14
+                                halign: 'center'
+                                valign: 'middle'
+                                on_text: app.root.writeHolding(1315, self.text, 10)
+
+                    Label:
+                        text:'Aceleração de Desaceleração'
+                        text_size: self.size
+                        font_size: 20
+                        size_hint_y: 0.4
+                        valign: 'center'
+                        halign: 'left'
+                    Label:
+                        text:'MIN: 10 s  Max: 60 s'
+                        text_size: self.size
+                        font_size: 12
+                        halign: 'center'
+                        valign: 'top'
+                        size_hint_y: 0.2
+                    Label:
+                        text:'Velocidade:'
+                        bold: True
+                        size_hint_y: 0.2
+                        font_size: 20
+                    Label:
+                        id: sliderLabel
+                        text: "-.- Hz"
+                        font_size: 14
+                        halign: 'right'
+                        size_hint_y: 0.3
+
+
+                Slider:
+                    id: inversorFreq
+                    min: 0
+                    max: 60
+                    step: 1
+                    orientation: 'vertical'
+                    size_hint_x: 0.1
+                    on_value: 
+                        app.root.writeHolding(1313, int(self.value * 10))
+                        app.root._commands.ids.sliderLabel.text = str(self.value) + " Hz"
+
+            BoxLayout:
+                spacing:10
+                orientation:'vertical'
+                Label:
+                    text:'Religamento'
+                    size_hint_y: 0.25
+
+                GridLayout: 
+                    cols: 2
+                    rows: 2
+                    Label:
+                        text: "Manual"
+                        font_size: 18
+                        halign:'left'
+                    CheckBox:
+                        id: manual
+                        group: 'relig'
+                        on_active: app.root._autoRelig = False
+                        active: True
+                    Label:
+                        text: "Automatico"
+                        font_size: 18
+                        halign:'left'
+                    CheckBox:
+                        id: auto
+                        group: 'relig'
+                        on_active: app.root._autoRelig = True          
+                Label:
+                    text:'Mínima [Kgf/cm^2]'
+                    bold: True
+                    size_hint_y: 0.125
+
+                TextInput:
+                    id: minPress
+                    text: "0.0"
+                    font_size: 14
+                    halign: 'right'
+                    size_hint_y: 0.3
+                    on_text: app.root._pressMin = self.text if self.text != '' else '0.0'
+                Label:
+                    text:'Máxima [Kgf/cm^2]'
+                    bold: True
+                    size_hint_y: 0.125
+                TextInput:
+                    id: maxPress
+                    text: "5.0"
+                    font_size: 14
+                    halign: 'right'
+                    size_hint_y: 0.3
+                    on_text: app.root._pressMax = self.text if self.text != '' else '5.0'
+                
+
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint_y: 0.4
+            
+            BoxLayout:
+                size_hint_x: 0.25
+                orientation:'vertical'
+                Label:
+                    text: " Válvulas"
+            GridLayout:
+                spacing: 20
+                cols: 6
+                rows: 1
+                
+                BoxLayout:
+                    orientation:'vertical'
+                    Label:
+                        text:'XV-01'
+                    GridLayout:
+                        cols: 2
+                        rows: 2
+                        Label:
+                            text: "Aberto"
+                            font_size: 14
+                        CheckBox:
+                            id: xv1open
+                            group: 'xv1Group'
+                            on_active: app.root.writeBit(712, 0, 1) 
+                        Label:
+                            text: "Fechado"
+                            font_size: 14
+                        CheckBox:
+                            id: xv1close
+                            group: 'xv1Group'
+                            on_active: app.root.writeBit(712, 0, 0)
+                        
+                BoxLayout:
+                    orientation:'vertical'
+                    Label:
+                        text:'XV-02'
+                    GridLayout:
+                        cols: 2
+                        rows: 2
+                        Label:
+                            text: "Aberto"
+                            font_size: 14
+                        CheckBox:
+                            id: xv2open
+                            group: 'xv2Group'
+                            on_active: app.root.writeBit(712, 1, 1) 
+                        Label:
+                            text: "Fechado"
+                            font_size: 14
+                        CheckBox:
+                            id: xv2close
+                            group: 'xv2Group'
+                            on_active: app.root.writeBit(712, 1, 0)
+
+                BoxLayout:
+                    orientation:'vertical'
+                    Label:
+                        text:'XV-03'
+                    GridLayout:
+                        cols: 2
+                        rows: 2
+                        Label:
+                            text: "Aberto"
+                            font_size: 14
+                        CheckBox:
+                            id: xv3open
+                            group: 'xv3Group'
+                            on_active: app.root.writeBit(712, 2, 1) 
+                        Label:
+                            text: "Fechado"
+                            font_size: 14
+                        CheckBox:
+                            id: xv3close
+                            group: 'xv3Group'
+                            on_active: app.root.writeBit(712, 2, 0)
+
+                BoxLayout:
+                    orientation:'vertical'
+                    Label:
+                        text:'XV-04'
+                    GridLayout:
+                        cols: 2
+                        rows: 2
+                        Label:
+                            text: "Aberto"
+                            font_size: 14
+                        CheckBox:
+                            id: xv4open
+                            group: 'xv4Group'
+                            on_active: app.root.writeBit(712, 3, 1) 
+                        Label:
+                            text: "Fechado"
+                            font_size: 14
+                        CheckBox:
+                            id: xv4close
+                            group: 'xv4Group'
+                            on_active: app.root.writeBit(712, 3, 0)
+
+                BoxLayout:
+                    orientation:'vertical'
+                    Label:
+                        text:'XV-05'
+                    GridLayout:
+                        cols: 2
+                        rows: 2
+                        Label:
+                            text: "Aberto"
+                            font_size: 14
+                        CheckBox:
+                            id: xv5open
+                            group: 'xv5Group'
+                            on_active: app.root.writeBit(712, 4, 1)
+
+                        Label:
+                            text: "Fechado"
+                            font_size: 14
+                        CheckBox:
+                            id: xv5close
+                            group: 'xv5Group'
+                            on_active: app.root.writeBit(712, 4, 0)
+
+                BoxLayout:
+                    orientation:'vertical'
+                    Label:
+                        text:'XV-06'
+                    GridLayout:
+                        cols: 2
+                        rows: 2
+                        Label:
+                            text: "Aberto"
+                            font_size: 14
+                        CheckBox:
+                            id: xv6open
+                            group: 'xv6Group'
+                            on_active: app.root.writeBit(712, 5, 1) 
+                        Label:
+                            text: "Fechado"
+                            font_size: 14
+                        CheckBox:
+                            id: xv6close
+                            group: 'xv6Group'
+                            on_active: app.root.writeBit(712, 5, 0) 
+                        
+<RealTimeGraphPopup>:
+    title: "Gráfico em tempo real"
+    BoxLayout:
+        orientation:'vertical'
+        TimeSeriesGraph:
+            id: real_timeGraphPit
+            xlabel: 'Horário'
+            ylabel: 'Pressão PIT01 [kgf/cm3]'
+            background_color: 0.5,0.5,0.5,0.5
+            x_ticks_minor: 1
+            x_ticks_major: 5
+            y_ticks_major: 1
+            x_grid_label: True
+            y_grid_label: True
+            padding: 5
+            x_grid: True
+            y_grid: True
+            xmin: 0
+            ymin: 0
+            ymax: 5        
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint:(1,0.15)
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint:(0.2,1)
+                Label:
+                    size_hint:(0.3,1)
+                    text: 'Número de pontos do gráfico'
+                LabelCheckBoxPointsPitDataGraph:
+                    id: np20
+                    on_kv_post:
+                        self.ids.label.text = '20'
+                        self.ids.checkbox_graph.group = 'cb_group'
+                LabelCheckBoxPointsPitDataGraph:
+                    id: np50
+                    on_kv_post:
+                        self.ids.label.text = '50'
+                        self.ids.checkbox_graph.group = 'cb_group'
+                LabelCheckBoxPointsPitDataGraph:
+                    id: np100
+                    on_kv_post:
+                        self.ids.label.text = '100'
+                        self.ids.checkbox_graph.group = 'cb_group'
+        TimeSeriesGraph:
+            id: real_timeGraphFit
+            xlabel: 'Horário'
+            ylabel: 'Vazão FIT-03 [Nm3/min]'
+            background_color: 0.5,0.5,0.5,0.5
+            x_ticks_minor: 1
+            x_ticks_major: 5
+            y_ticks_major: 2
+            x_grid_label: True
+            y_grid_label: True
+            padding: 5
+            x_grid: True
+            y_grid: True
+            xmin: 0
+            ymin: 0
+            ymax: 12        
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint:(1,0.15)
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint:(0.2,1)
+                Label:
+                    size_hint:(0.3,1)
+                    text: 'Número de pontos do gráfico'
+                LabelCheckBoxPointsFitDataGraph:
+                    id: np20
+                    on_kv_post:
+                        self.ids.label.text = '20'
+                        self.ids.checkbox_graph.group = 'cb_group2'
+                LabelCheckBoxPointsFitDataGraph:
+                    id: np50
+                    on_kv_post:
+                        self.ids.label.text = '50'
+                        self.ids.checkbox_graph.group = 'cb_group2'
+                LabelCheckBoxPointsFitDataGraph:
+                    id: np100
+                    on_kv_post:
+                        self.ids.label.text = '100'
+                        self.ids.checkbox_graph.group = 'cb_group2'
+            Button:
+                text: 'Fechar'
+                size_hint: (0.1,1)
+                on_release: root.dismiss()
+
+
+<LabelCheckBoxPointsPitDataGraph>:
+    orientation: 'horizontal'
+    size_hint: (0.1,1)
+    CheckBox:
+        id:checkbox_graph
+        on_active: app.root._realTimeGraph.ids.real_timeGraphPit.setMaxPoints(int(label.text),0) if app.root is not None else None
+    Label:
+        id: label
+
+<LabelCheckBoxPointsFitDataGraph>:
+    orientation: 'horizontal'
+    size_hint: (0.1,1)
+    CheckBox:
+        id:checkbox_graph
+        on_active: app.root._realTimeGraph.ids.real_timeGraphFit.setMaxPoints(int(label.text),0) if app.root is not None else None
+    Label:
+        id: label
+                        
+<HistGraphPopup>:
+    title: "Histórico de dados na planta"
+    BoxLayout:
+        orientation:'vertical'
+        TimeSeriesGraph:
+            id: hist_timeGraph
+            xlabel: 'Horário'
+            ylabel: 'Values'
+            background_color: 0.5,0.5,0.5,0.5
+            x_ticks_minor: 1
+            x_ticks_major: int(self.xmax/10)
+            y_ticks_major: self.ymax/10
+            x_grid_label: True
+            y_grid_label: True
+            padding: 5
+            x_grid: True
+            y_grid: True
+            xmin: 0
+            ymin: 0
+            ymax: 200
+
+        BoxLayout:
+            id: sensores
+            orientation:'horizontal'
+            size_hint: (1,0.1)
+        
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint:(1,0.1)
+            Label:
+                size_hint:(0.3,1)
+                text: 'Timestamp inicial \r\n [size=12] (DD/MM/AAAA HH:MM:SS) [/size]'
+                halign:'center'
+                markup: True
+            TextInput:
+                id: txt_init_time
+                size_hint: (0.4,1)
+                halign: 'center'
+                valign: 'middle'
+                multiline: False
+                on_text: app.root.getDataDB()
+
+            Label:
+                size_hint:(0.3,1)
+                text: 'Timestamp final \r\n [size=12] (DD/MM/AAAA HH:MM:SS) [/size]'
+                halign:'center'
+                markup: True
+            TextInput:
+                id: txt_final_time
+                size_hint: (0.4,1)
+                halign: 'center'
+                valign: 'middle'
+                multiline: False
+                on_text: app.root.getDataDB()
+            Button:
+                text: 'Fechar'
+                size_hint: (0.2,1)
+                on_release: root.dismiss()
+
+
+<LabelCheckBoxHistGraph>:
+    orientation: 'horizontal'
+    size_hint: (0.05,1)
+    CheckBox:
+        id: checkbox
+        on_active: app.root.getDataDB()
+
+    Label:
+        id: label
+        font_size: 12
+        bold: True
+
+
+
+
+
+        
